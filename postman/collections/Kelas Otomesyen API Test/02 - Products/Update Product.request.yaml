@@ -1,0 +1,41 @@
+$kind: http-request
+url: "{{base_url}}/api/products/{{created_product_id}}"
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \  \"price\": 4500000,\r
+
+    \  \"stock\": 5\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200 OK\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Product updated successfully\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    var product = jsonData.data || jsonData;\r
+
+      \r
+
+      \    pm.expect(product.price).to.eql(4500000);\r
+
+      \    pm.expect(product.stock).to.eql(5);\r
+
+      });"
+    language: text/javascript
+order: 4000

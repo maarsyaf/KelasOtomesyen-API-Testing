@@ -1,0 +1,54 @@
+$kind: http-request
+url: "{{base_url}}/api/products"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Keyboard Mechanical Nih\",\r
+
+    \  \"description\": \"Bang Uno izin untuk simulasi API Test ya\",\r
+
+    \  \"price\": 5000000,\r
+
+    \  \"stock\": 100,\r
+
+    \  \"category\": \"Electronics\",\r
+
+    \  \"available_date\": \"{{today}}\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Product created successfully\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Save created product ID\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    var productId = jsonData.id || (jsonData.data && jsonData.data.id);\r
+
+      \r
+
+      \    pm.expect(productId).to.exist;\r
+
+      \    pm.environment.set(\"created_product_id\", productId);\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "var today = new Date().toISOString().split('T')[0];\r
+
+      pm.environment.set(\"today\", today);"
+    language: text/javascript
+order: 2000

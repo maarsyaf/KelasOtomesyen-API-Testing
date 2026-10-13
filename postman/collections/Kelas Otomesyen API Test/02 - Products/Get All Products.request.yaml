@@ -1,0 +1,46 @@
+$kind: http-request
+url: "{{base_url}}/api/products"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200 OK\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response time is under 1000ms\", function () {\r
+
+      \    pm.expect(pm.response.responseTime).to.be.below(1000);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response valid & dynamic product_id stored\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    var products = Array.isArray(jsonData) ? jsonData : (jsonData.data || []);\r
+
+      \r
+
+      \    pm.expect(products).to.be.an('array').that.is.not.empty;\r
+
+      \r
+
+      \    var firstProductId = products[0].id;\r
+
+      \    pm.expect(firstProductId).to.be.a('string');\r
+
+      \r
+
+      });"
+    language: text/javascript
+order: 1000

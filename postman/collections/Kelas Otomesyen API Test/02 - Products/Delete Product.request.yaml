@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{base_url}}/api/products/{{created_product_id}}"
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Product deleted successfully\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r
+
+      \    pm.environment.unset(\"product_id\");\r
+
+      \    pm.environment.unset(\"created_product_id\");\r
+
+      });"
+    language: text/javascript
+order: 5000

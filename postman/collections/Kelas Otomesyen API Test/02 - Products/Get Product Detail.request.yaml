@@ -1,0 +1,34 @@
+$kind: http-request
+url: "{{base_url}}/api/products/{{created_product_id}}"
+method: GET
+headers:
+  "": ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200 OK\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Product ID matches created product\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    var product = jsonData.data || jsonData;\r
+
+      \    var expectedId = pm.environment.get(\"created_product_id\") || pm.environment.get(\"product_id\");\r
+
+      \r
+
+      \    pm.expect(product.id).to.eql(expectedId);\r
+
+      });"
+    language: text/javascript
+order: 3000

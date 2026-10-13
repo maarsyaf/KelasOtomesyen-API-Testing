@@ -1,0 +1,45 @@
+$kind: http-request
+url: "{{base_url}}/api/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"validemail@email.com\",\r
+
+    \  \"password\": \"12345\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200 OK\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response time is under 3000ms\", function () {\r
+
+      \    pm.expect(pm.response.responseTime).to.be.below(3000);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Store access token to environment\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    var token = jsonData.token || (jsonData.data && jsonData.data.token) || jsonData.accessToken || jsonData.access_token;\r
+
+      \r
+
+      \    pm.expect(token).to.exist;\r
+
+      \    pm.environment.set(\"token\", token);\r
+
+      });"
+    language: text/javascript
+order: 1000

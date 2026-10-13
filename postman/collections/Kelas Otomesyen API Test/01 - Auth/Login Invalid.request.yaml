@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{base_url}}/api/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"invalidemail@email.com\",\r
+
+    \  \"password\": \"invalidpassword\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 400 or 401\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([400, 401]);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response contains error property\", function () {\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData).to.have.property(\"error\");\r
+
+      });"
+    language: text/javascript
+order: 2000

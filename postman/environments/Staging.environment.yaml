@@ -1,0 +1,8 @@
+name: Staging
+values:
+  - key: base_url
+    value: 'https://api-test.kelasotomesyen.com'
+  - key: token
+    value: ''
+  - key: today
+    value: ''
